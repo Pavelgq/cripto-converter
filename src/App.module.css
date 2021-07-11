@@ -53,9 +53,7 @@
 .wrapper {
   display: flex;
 }
-.wrapper:active {
-  outline: orange;
-}
+
 
 .group {
   display: flex;
@@ -106,6 +104,14 @@
   height: 50px;
   padding: 13px 0 14px 16px;
   box-sizing: border-box;
+}
+
+.wrapper:focus-within {
+  outline: 2px solid #11b3fe; 
+}
+
+.textField:focus {
+  outline: 2px solid #11b3fe; 
 }
 
 .numberField {
