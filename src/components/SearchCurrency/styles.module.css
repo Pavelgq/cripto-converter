@@ -1,7 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.complexField {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 46%;
+}
+
 .searchButton {
   font-style: normal;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 0,7vmax; 
   line-height: 23px;
 
   color: #282828;
@@ -9,20 +24,15 @@
 
   position: relative;
 
-  box-sizing: border-box;
-
   background: #f6f7f8;
   border: 1px solid #e3ebef;
   box-sizing: border-box;
   border-radius: 0 5px 5px 0;
   border-left: none;
 
-  width: 150px;
+  flex-grow: 1;
   height: 50px;
   cursor: pointer;
-
-  display: flex;
-  align-items: center;
 }
 
 .searchButton::before {
@@ -35,25 +45,81 @@
   background-color: #e3ebef;
 }
 
+.textField {
+  text-decoration: none;
+  font-family: Roboto;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 23px;
+
+  background: #f6f7f8;
+  border: 1px solid #e3ebef;
+
+  border-radius: 5px;
+
+  height: 50px;
+  padding: 13px 0 14px 16px;
+  box-sizing: border-box;
+}
+
+.numberField {
+  width: 65%;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+}
+
 .currencyIcon {
   width: 17px;
   stroke: #11b3fe;
   transform: rotate(10deg);
-  margin-left: 36px;
+  margin-left: 10%;
 }
 
 .currencyTitle {
-  margin-left: 14px;
+  margin-left: 5%;
+  text-transform: uppercase;
 }
 .arrowIcon {
-  margin-left: 33px;
+  width: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
+
 .searchField {
-  display: none;
+  position: absolute;
+  width: 100%;
+  height: 50px;
+  right: 0;
+  top: 0;
+  text-decoration: none;
+  font-family: Roboto;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 23px;
+
+  background: #f6f7f8;
+  border: 1px solid #e3ebef;
+
+  border-radius: 5px;
+
+  height: 50px;
+  padding: 13px 0 14px 16px;
+  box-sizing: border-box;
+}
+
+.closeButton {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  right: 10px;
+  top: 18px;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .list {
-  display: none;
   list-style: none;
 }

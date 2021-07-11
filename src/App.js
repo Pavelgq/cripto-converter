@@ -1,26 +1,45 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import arrowSwapLeft from "@icons/arrow-swap-left.svg";
 import arrowSwapRight from "@icons/arrow-swap-right.svg";
 
+import {CurrencyProvider} from '@contexts/CurrencyContext'
 import SearchCurrency from "@components/SearchCurrency/SearchCurrency";
 
 import styles from "./App.module.css";
 
 const App = () => {
-  //  const  [currency, setCurrency] = useState('')
+  const [appState, setAppState] = useState({
+    loading: false,
+    currencies: null,
+  });
 
-  //   useEffect(() => {
-  //     setFilteredCurrency(
-  //       currency.filter((country) =>
-  //         country.name.toLowerCase().includes(search.toLowerCase())
-  //       )
-  //     );
-  //   }, [search, currency]);
+  const [convertFrom, setConvertFrom] = useState('')
+  const [convertTo, setConvertTo] = useState('')
 
-  //   if (loading) {
-  //     return <p>Loading...</p>;
-  //   }
+  useEffect(() => {
+    setAppState({ loading: true });
+    const apiUrl = `https://api.changenow.io/v1/currencies?active=true`;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((currencies) => {
+        setAppState({ loading: false, currencies: currencies });
+        console.log(currencies)
+      });
+  }, [setAppState]);
+
+  const changeCurrencies = () => {
+    //меняем местами стэйты
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Exchange")
+  }
+
+    if (appState.loading) {
+      return <p>Loading...</p>;
+    }
 
   return (
     <main className={styles.main}>
@@ -28,28 +47,17 @@ const App = () => {
         <h1 className={styles.title}>Crypto Exchange</h1>
         <span className={styles.subTitle}>Crypto Exchange</span>
 
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <fieldset className={styles.group}>
-            <div className={styles.wrapper}>
-              <input
-                type="text"
-                value="0,023"
-                className={`${styles.textField} ${styles.numberField}`}
-              />
-              <SearchCurrency />
-            </div>
-            <button type="button" className={styles.swapButton}>
+              
+              <SearchCurrency isLoading={appState.loading} currencies={appState.currencies} onChange={setConvertFrom} />
+            <button type="button" className={styles.swapButton} onClick={changeCurrencies}>
               <img src={arrowSwapLeft}></img>
               <img src={arrowSwapRight}></img>
             </button>
-            <div className={styles.wrapper}>
-              <input
-                type="text"
-                value="1,1165462"
-                className={`${styles.textField} ${styles.numberField}`}
-              />
-              <SearchCurrency />
-            </div>
+
+              <SearchCurrency isLoading={appState.loading} currencies={appState.currencies} onChange={setConvertTo} />
+
           </fieldset>
 
           <fieldset className={styles.group}>
