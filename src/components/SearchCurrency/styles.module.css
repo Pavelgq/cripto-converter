@@ -16,7 +16,7 @@
 .searchButton {
   font-style: normal;
   font-weight: normal;
-  font-size: 0,7vmax; 
+  font-size: 0, 7vmax;
   line-height: 23px;
 
   color: #282828;
@@ -85,6 +85,17 @@
   margin-right: 5%;
 }
 
+.closeIcon {
+  width: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+  padding: 10px 10px;
+}
+
+.searchWrapper {
+  display: flex;
+  flex-direction: column;
+}
 
 .searchField {
   position: absolute;
@@ -112,8 +123,9 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  right: 10px;
-  top: 18px;
+  right: 19px;
+  top: 10px;
+ 
   background-color: transparent;
   border: none;
   padding: 0;
@@ -122,4 +134,12 @@
 
 .list {
   list-style: none;
+  margin: 0;
+
+  position: absolute;
+  top: 50px;
+  left: 0;
+
+  width: 100%;
+  height: auto;
 }

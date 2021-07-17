@@ -3,7 +3,7 @@ import React, {useState, useEffect} from "react";
 import arrowSwapLeft from "@icons/arrow-swap-left.svg";
 import arrowSwapRight from "@icons/arrow-swap-right.svg";
 
-import {CurrencyProvider} from '@contexts/CurrencyContext'
+import {CurrencyProvider} from "@contexts/CurrencyContext";
 import SearchCurrency from "@components/SearchCurrency/SearchCurrency";
 
 import styles from "./App.module.css";
@@ -14,32 +14,32 @@ const App = () => {
     currencies: null,
   });
 
-  const [convertFrom, setConvertFrom] = useState('')
-  const [convertTo, setConvertTo] = useState('')
+  const [convertFrom, setConvertFrom] = useState("");
+  const [convertTo, setConvertTo] = useState("");
 
   useEffect(() => {
-    setAppState({ loading: true });
+    setAppState({loading: true});
     const apiUrl = `https://api.changenow.io/v1/currencies?active=true`;
     fetch(apiUrl)
       .then((res) => res.json())
       .then((currencies) => {
-        setAppState({ loading: false, currencies: currencies });
-        console.log(currencies)
+        setAppState({loading: false, currencies: currencies});
+        console.log(currencies);
       });
   }, [setAppState]);
 
   const changeCurrencies = () => {
     //меняем местами стэйты
-  }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Exchange")
-  }
+    console.log("Exchange");
+  };
 
-    if (appState.loading) {
-      return <p>Loading...</p>;
-    }
+  if (appState.loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <main className={styles.main}>
@@ -49,15 +49,25 @@ const App = () => {
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <fieldset className={styles.group}>
-              
-              <SearchCurrency isLoading={appState.loading} currencies={appState.currencies} onChange={setConvertFrom} />
-            <button type="button" className={styles.swapButton} onClick={changeCurrencies}>
+            <SearchCurrency
+              isLoading={appState.loading}
+              currencies={appState.currencies}
+              onChange={setConvertFrom}
+            />
+            <button
+              type="button"
+              className={styles.swapButton}
+              onClick={changeCurrencies}
+            >
               <img src={arrowSwapLeft}></img>
               <img src={arrowSwapRight}></img>
             </button>
 
-              <SearchCurrency isLoading={appState.loading} currencies={appState.currencies} onChange={setConvertTo} />
-
+            <SearchCurrency
+              isLoading={appState.loading}
+              currencies={appState.currencies}
+              onChange={setConvertTo}
+            />
           </fieldset>
 
           <fieldset className={styles.group}>
