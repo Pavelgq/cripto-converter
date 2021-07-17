@@ -154,7 +154,7 @@
   color: #e03f3f;
 }
 
-@media (max-width 480px) {
+@media (max-width: 480px) {
   .title {
     font-size: 40px;
   }

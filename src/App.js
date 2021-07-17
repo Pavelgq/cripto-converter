@@ -24,12 +24,14 @@ const App = () => {
       .then((res) => res.json())
       .then((currencies) => {
         setAppState({loading: false, currencies: currencies});
-        console.log(currencies);
       });
   }, [setAppState]);
 
   const changeCurrencies = () => {
     //меняем местами стэйты
+    const temp = convertFrom;
+    setConvertFrom(convertTo)
+    setConvertTo(temp)
   };
 
   const handleSubmit = (event) => {
@@ -52,6 +54,7 @@ const App = () => {
             <SearchCurrency
               isLoading={appState.loading}
               currencies={appState.currencies}
+              current={convertFrom}
               onChange={setConvertFrom}
             />
             <button
@@ -66,6 +69,7 @@ const App = () => {
             <SearchCurrency
               isLoading={appState.loading}
               currencies={appState.currencies}
+              current={convertTo}
               onChange={setConvertTo}
             />
           </fieldset>

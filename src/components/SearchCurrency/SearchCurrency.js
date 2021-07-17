@@ -6,47 +6,63 @@ import close from "@icons/close.svg";
 import styles from "./styles.module.css";
 import CurrencyItem from "@components/CurrencyItem/CurrencyItem";
 
-const SearchCurrency = ({isLoading, currencies, onChange}) => {
-  const startCurrency = currencies ? Math.floor(Math.random() * currencies.length) : 0;
+const SearchCurrency = ({isLoading, currencies, current, onChange}) => {
+  let startCurrency = 0;
+  if (!current) {
+    startCurrency = currencies ? Math.floor(Math.random() * currencies.length) : 0;
+  } else {
+    startCurrency = current ? current : 0;
+  }
+  // const startCurrency = currencies ? Math.floor(Math.random() * currencies.length) : 0;
   const [currencyName, setCurrencyName] = useState(
-    currencies && currencies[startCurrency].ticker
+    currencies &&  currencies[startCurrency].ticker
   );
   const [currencyIcon, setCurrencyIcon] = useState(
     currencies && currencies[startCurrency].image
   );
   const [searchValue, setSearchValue] = useState("");
   const [searchFieldStyles, setSearchFieldStyles] = useState("hidden");
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState([]);
 
-    useEffect(() => {
-      onChange(startCurrency)
-    }, [])
+  useEffect(() => {
+    onChange(startCurrency);
+  }, []);
 
   const searchClick = (event) => {
-    console.log(event.target)
+    // console.log(event.target);
     if (searchFieldStyles === "hidden") {
-      setSearchFieldStyles(styles.searchWrapper)
+      setSearchFieldStyles(styles.searchWrapper);
     } else {
-      setSearchFieldStyles("hidden")
-      setSearchValue('')
+      setSearchFieldStyles("hidden");
+      setSearchValue("");
+      setItems([])
     }
   };
 
   const choiseCurrency = (index) => {
-    onChange(index)
-    console.log(index)
-    setCurrencyName(currencies[index].ticker)
-    setCurrencyIcon(currencies[index].image)
-  }
-  
+    onChange(index);
+    console.log(index);
+    setCurrencyName(currencies[index].ticker);
+    setCurrencyIcon(currencies[index].image);
+    searchClick()
+  };
+
   const searchElements = (event) => {
     setSearchValue(event.target.value);
-    const searchValue = event.target.value.toLowerCase()
-    console.log(searchValue) 
-    currencies = currencies.filter((element) => element.ticker.includes(searchValue))
-    setItems(currencies.map((element, index) => <CurrencyItem key={index} id={index} ticker={element.ticker} imageUrl={element.image} searchClick={choiseCurrency}/>) ) 
-
-    console.log(currencies, items)
+    const searchValue = event.target.value.toLowerCase();
+    console.log(searchValue);
+    currencies = currencies.filter((element) => element.ticker.includes(searchValue));
+    setItems(
+      currencies.map((element, index) => (
+        <CurrencyItem
+          key={index}
+          id={index}
+          ticker={element.ticker}
+          imageUrl={element.image}
+          searchClick={() => choiseCurrency(index)}
+        />
+      ))
+    );
   };
 
   return (
@@ -75,8 +91,9 @@ const SearchCurrency = ({isLoading, currencies, onChange}) => {
           <button type="button" className={styles.closeButton}>
             <img src={close} className={styles.closeIcon} onClick={searchClick}></img>
           </button>
+          
         </div>
-        <ul className={styles.list}>{items}</ul>
+        <ul className={styles.listResult}>{items}</ul>
       </div>
     </div>
   );
