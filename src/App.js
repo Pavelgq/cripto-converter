@@ -18,14 +18,13 @@ const App = () => {
 
   const [convertFrom, setConvertFrom] = useState(null);
   const [convertTo, setConvertTo] = useState(null);
-  const [valueFrom, setValueFrom] = useState(1)
-  const [valueTo, setValueTo] = useState(0)
+  const [valueFrom, setValueFrom] = useState(1);
+  const [valueTo, setValueTo] = useState(0);
 
   const [minAmount, setMinAmount] = useState(0);
   const [flagChangeTicker, setFlagChangeTicker] = useState(false);
   const [flagExchange, setFlagExchange] = useState(false);
-  const [error, setError] = useState('')
-
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setAppState({loading: true});
@@ -41,66 +40,65 @@ const App = () => {
     if (!appState.loading && appState.currencies) {
       setConvertFrom(appState.currencies[0]);
       setConvertTo(appState.currencies[1]);
-      setValueTo(valueFrom * minAmount)
+      setValueTo(valueFrom * minAmount);
     }
   }, [appState.currencies]);
 
   useEffect(() => {
     if (convertFrom && convertTo && flagChangeTicker) {
-      setError('')
+      setError("");
       const apiUrl = `https://api.changenow.io/v1/min-amount/${convertFrom.ticker}_${convertTo.ticker}?api_key=${apiKey}`;
-      fetch(apiUrl)
-        .then((res) => {
-          const responsePromise = res.json();
-          setMinAmount(res.minAmount);
-          responsePromise
-            .then((data) => {
-                if (res.status >= 400) {
-                    console.log(error)
-                    setError('Pair is inactive');
-                } else {
-                    setMinAmount(data.minAmount)
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-                setError('Pair is inactive');
-            });
-        })
+      fetch(apiUrl).then((res) => {
+        const responsePromise = res.json();
+        setMinAmount(res.minAmount);
+        responsePromise
+          .then((data) => {
+            if (res.status >= 400) {
+              console.log(error);
+              setError("Pair is inactive");
+            } else {
+              setMinAmount(data.minAmount);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            setError("Pair is inactive");
+          });
+      });
       setFlagChangeTicker(false);
     }
   }, [flagChangeTicker]);
 
   useEffect(() => {
     if (convertFrom && convertTo && minAmount && flagExchange) {
-      setError('')
+      setError("");
       fetch(
         `https://api.changenow.io/v1/exchange-amount/${minAmount}/${convertFrom.ticker}_${convertTo.ticker}?api_key=${apiKey}`
       )
         .then((response) => response.json())
         .then((result) => {
-          setValueTo(result.estimatedAmount)
+          setValueTo(result.estimatedAmount);
         })
         .catch((error) => {
           console.log("error", error);
-          setError(error.message)
+          setError(error.message);
         });
-        setFlagExchange(false)
-      }
-  }, [flagExchange])
+      setFlagExchange(false);
+    }
+  }, [flagExchange]);
 
   const changeCurrencies = () => {
     const temp = convertFrom;
     setConvertFrom(convertTo);
-    setConvertTo(temp)
+    setConvertTo(temp);
     const valueTemp = valueFrom;
-    setValueFrom(valueTo)
-    setValueTo(valueTemp)
+    setValueFrom(valueTo);
+    setValueTo(valueTemp);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setFlagExchange(true)
+    setFlagExchange(true);
 
     // console.log(convertFrom, convertTo, minAmount)
     // console.log("Exchange",convertFrom.value, minAmount, minAmount*convertFrom.value);
@@ -112,7 +110,7 @@ const App = () => {
       setFlagChangeTicker(true);
     }
     setConvertFrom(object);
-    setValueFrom(value)
+    setValueFrom(value);
   };
 
   const changeConvertTo = (object, value) => {
@@ -120,7 +118,7 @@ const App = () => {
       setFlagChangeTicker(true);
     }
     setConvertTo(object);
-    setValueTo(value)
+    setValueTo(value);
   };
 
   if (appState.loading) {
@@ -130,11 +128,10 @@ const App = () => {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <div className={styles.titleWrapper} >
+        <div className={styles.titleWrapper}>
           <h1 className={styles.title}>Crypto Exchange</h1>
           <span className={styles.subTitle}>Crypto Exchange</span>
         </div>
-        
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <fieldset className={styles.group}>
@@ -142,7 +139,7 @@ const App = () => {
               isLoading={appState.loading}
               currencies={appState.currencies}
               current={convertFrom}
-              currentValue = {valueFrom}
+              currentValue={valueFrom}
               onChange={changeConvertFrom}
             />
             <button
@@ -158,7 +155,7 @@ const App = () => {
               isLoading={appState.loading}
               currencies={appState.currencies}
               current={convertTo}
-              currentValue = {valueTo}
+              currentValue={valueTo}
               onChange={changeConvertTo}
             />
           </fieldset>
@@ -166,13 +163,12 @@ const App = () => {
           <fieldset className={styles.group}>
             <legend className={styles.fieldLegend}>Your Ethereum address</legend>
             <input type="text" className={styles.textField} />
-              <div className={styles.exchangeWrapper}>
-                <button type="submit" className={styles.button}>
-                  Exchange
-                </button>
-                {error && <span className={styles.errorMessage}>{error}</span>}
-              </div>
-            
+            <div className={styles.exchangeWrapper}>
+              <button type="submit" className={styles.button}>
+                Exchange
+              </button>
+              {error && <span className={styles.errorMessage}>{error}</span>}
+            </div>
           </fieldset>
         </form>
       </div>
