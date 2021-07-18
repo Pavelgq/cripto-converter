@@ -6,51 +6,51 @@ import close from "@icons/close.svg";
 import styles from "./styles.module.css";
 import CurrencyItem from "@components/CurrencyItem/CurrencyItem";
 
-const SearchCurrency = ({isLoading, currencies, current, onChange}) => {
-  let startCurrency = 0;
-  if (!current) {
-    startCurrency = currencies ? Math.floor(Math.random() * currencies.length) : 0;
-  } else {
-    startCurrency = current ? current : 0;
-  }
-  // const startCurrency = currencies ? Math.floor(Math.random() * currencies.length) : 0;
+const SearchCurrency = ({isLoading, currencies, current = '', onChange}) => {
   const [currencyName, setCurrencyName] = useState(
-    currencies &&  currencies[startCurrency].ticker
+    current && current.ticker
   );
   const [currencyIcon, setCurrencyIcon] = useState(
-    currencies && currencies[startCurrency].image
+    current && current.image
   );
+  const [inputValue, setInputValue] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [searchFieldStyles, setSearchFieldStyles] = useState("hidden");
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    onChange(startCurrency);
-  }, []);
+  const [toggle, setToggle] = useState(true);
 
-  const searchClick = (event) => {
+  useEffect(() => {
+    if (current) {
+      choiseCurrency(current)
+    }
+  }, [current]);
+
+  const searchClick = () => {
     // console.log(event.target);
-    if (searchFieldStyles === "hidden") {
+    if (toggle) {
       setSearchFieldStyles(styles.searchWrapper);
+      setToggle(false)
     } else {
       setSearchFieldStyles("hidden");
       setSearchValue("");
-      setItems([])
+      setItems([]);
+      setToggle(true)
     }
   };
 
-  const choiseCurrency = (index) => {
-    onChange(index);
-    console.log(index);
-    setCurrencyName(currencies[index].ticker);
-    setCurrencyIcon(currencies[index].image);
-    searchClick()
+  const choiseCurrency = (element) => {
+    onChange({...element, value: inputValue});
+    setCurrencyName(element.ticker);
+    setCurrencyIcon(element.image);
+    if (!toggle) {
+      searchClick();
+    }
   };
 
   const searchElements = (event) => {
     setSearchValue(event.target.value);
     const searchValue = event.target.value.toLowerCase();
-    console.log(searchValue);
     currencies = currencies.filter((element) => element.ticker.includes(searchValue));
     setItems(
       currencies.map((element, index) => (
@@ -59,18 +59,24 @@ const SearchCurrency = ({isLoading, currencies, current, onChange}) => {
           id={index}
           ticker={element.ticker}
           imageUrl={element.image}
-          searchClick={() => choiseCurrency(index)}
+          searchClick={() => choiseCurrency(element)}
         />
       ))
     );
   };
 
+  const handleChange = (event) => {
+    setInputValue(event.target.value)
+    onChange({...current, value: event.target.value})
+  }
+
   return (
     <div className={styles.complexField}>
       <input
         type="text"
-        value="0,023"
+        value={current ? current.value : inputValue}
         className={`${styles.textField} ${styles.numberField}`}
+        onChange={handleChange}
       />
       <button type="button" className={styles.searchButton} onClick={searchClick}>
         <div className={styles.container}>
@@ -91,7 +97,6 @@ const SearchCurrency = ({isLoading, currencies, current, onChange}) => {
           <button type="button" className={styles.closeButton}>
             <img src={close} className={styles.closeIcon} onClick={searchClick}></img>
           </button>
-          
         </div>
         <ul className={styles.listResult}>{items}</ul>
       </div>

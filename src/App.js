@@ -3,6 +3,8 @@ import React, {useState, useEffect} from "react";
 import arrowSwapLeft from "@icons/arrow-swap-left.svg";
 import arrowSwapRight from "@icons/arrow-swap-right.svg";
 
+import {apiKey} from '~/secret.js'
+
 import {CurrencyProvider} from "@contexts/CurrencyContext";
 import SearchCurrency from "@components/SearchCurrency/SearchCurrency";
 
@@ -14,8 +16,10 @@ const App = () => {
     currencies: null,
   });
 
-  const [convertFrom, setConvertFrom] = useState("");
-  const [convertTo, setConvertTo] = useState("");
+  const [convertFrom, setConvertFrom] = useState(null);
+  const [convertTo, setConvertTo] = useState(null);
+  const [minAmount, setMinAmount] = useState(0);
+  const [flagChangeTicker, setFlagChangeTicker] = useState(false)
 
   useEffect(() => {
     setAppState({loading: true});
@@ -27,17 +31,61 @@ const App = () => {
       });
   }, [setAppState]);
 
+  useEffect(() => {
+    if (!appState.loading && appState.currencies) {
+        setConvertFrom({...appState.currencies[0], value: 1})
+        setConvertTo({...appState.currencies[1], value: 1*minAmount})
+      }
+  }, [appState.currencies])
+
+  useEffect(() => {
+    if (convertFrom && convertTo && flagChangeTicker) {
+      const apiUrl = `https://api.changenow.io/v1/min-amount/${convertFrom.ticker}_${convertTo.ticker}?api_key=${apiKey}`;
+      fetch(apiUrl)
+        .then((res) => res.json())
+        .then((res) => {
+          setMinAmount(res.minAmount);
+        });
+        setFlagChangeTicker(false)
+    }
+  }, [flagChangeTicker])
+
+
   const changeCurrencies = () => {
-    //меняем местами стэйты
     const temp = convertFrom;
-    setConvertFrom(convertTo)
-    setConvertTo(temp)
+    setConvertFrom(convertTo);
+    setConvertTo(temp);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Exchange");
+   await fetch(`https://api.changenow.io/v1/exchange-amount/${minAmount}/${convertFrom.ticker}_${convertTo.ticker}?api_key=${apiKey}`, )
+    .then(response => response.text())
+    .then(result => {
+      setConvertTo({...convertTo, value: result.estimatedAmount})
+    })
+    .catch(error => {
+      console.log('error', error)
+    });
+
+    // console.log(convertFrom, convertTo, minAmount)
+    // console.log("Exchange",convertFrom.value, minAmount, minAmount*convertFrom.value);
+    // setConvertTo({...convertTo, value: minAmount*convertFrom.value})
   };
+
+  const changeConvertFrom = (value) => {
+    if (convertFrom.ticker !== value.ticker) {
+      setFlagChangeTicker(true)
+    }
+    setConvertFrom(value)
+  }
+
+  const changeConvertTo = (value) => {
+    if (convertFrom.ticker !== value.ticker) {
+      setFlagChangeTicker(true)
+    }
+    setConvertTo(value)
+  }
 
   if (appState.loading) {
     return <p>Loading...</p>;
@@ -55,7 +103,7 @@ const App = () => {
               isLoading={appState.loading}
               currencies={appState.currencies}
               current={convertFrom}
-              onChange={setConvertFrom}
+              onChange={changeConvertFrom}
             />
             <button
               type="button"
@@ -70,7 +118,7 @@ const App = () => {
               isLoading={appState.loading}
               currencies={appState.currencies}
               current={convertTo}
-              onChange={setConvertTo}
+              onChange={changeConvertTo}
             />
           </fieldset>
 
