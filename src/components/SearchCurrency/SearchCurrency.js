@@ -6,13 +6,9 @@ import close from "@icons/close.svg";
 import styles from "./styles.module.css";
 import CurrencyItem from "@components/CurrencyItem/CurrencyItem";
 
-const SearchCurrency = ({isLoading, currencies, current = '', onChange}) => {
-  const [currencyName, setCurrencyName] = useState(
-    current && current.ticker
-  );
-  const [currencyIcon, setCurrencyIcon] = useState(
-    current && current.image
-  );
+const SearchCurrency = ({isLoading, currencies, current, currentValue, onChange}) => {
+  const [currencyName, setCurrencyName] = useState(current && current.ticker);
+  const [currencyIcon, setCurrencyIcon] = useState(current && current.image);
   const [inputValue, setInputValue] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [searchFieldStyles, setSearchFieldStyles] = useState("hidden");
@@ -22,7 +18,7 @@ const SearchCurrency = ({isLoading, currencies, current = '', onChange}) => {
 
   useEffect(() => {
     if (current) {
-      choiseCurrency(current)
+      choiseCurrency(current);
     }
   }, [current]);
 
@@ -30,17 +26,17 @@ const SearchCurrency = ({isLoading, currencies, current = '', onChange}) => {
     // console.log(event.target);
     if (toggle) {
       setSearchFieldStyles(styles.searchWrapper);
-      setToggle(false)
+      setToggle(false);
     } else {
       setSearchFieldStyles("hidden");
       setSearchValue("");
       setItems([]);
-      setToggle(true)
+      setToggle(true);
     }
   };
 
   const choiseCurrency = (element) => {
-    onChange({...element, value: inputValue});
+    onChange(element, inputValue);
     setCurrencyName(element.ticker);
     setCurrencyIcon(element.image);
     if (!toggle) {
@@ -66,15 +62,15 @@ const SearchCurrency = ({isLoading, currencies, current = '', onChange}) => {
   };
 
   const handleChange = (event) => {
-    setInputValue(event.target.value)
-    onChange({...current, value: event.target.value})
-  }
+    setInputValue(event.target.value);
+    onChange(current, event.target.value);
+  };
 
   return (
     <div className={styles.complexField}>
       <input
         type="text"
-        value={current ? current.value : inputValue}
+        value={currentValue}
         className={`${styles.textField} ${styles.numberField}`}
         onChange={handleChange}
       />

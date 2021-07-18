@@ -159,3 +159,12 @@
 .listResult > li:first-child {
   border-top: 1px solid #e3ebef;
 }
+
+@media (max-width: 480px) {
+.complexField {
+
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+}
